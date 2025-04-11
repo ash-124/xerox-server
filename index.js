@@ -26,15 +26,19 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const database = client.db("xerox");
-    const productCollection =database.collection("products");
-    // Connect the client to the server	(optional starting in v4.7)
+    const productCollection = database.collection("products");
     await client.connect();
-    // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+    app.post('/products', async(req, res)=>{
+      const data = req.body;
+      const result = await productCollection.insertOne(data);
+      res.send(result);
+    })
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
