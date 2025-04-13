@@ -32,8 +32,18 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     app.post('/products', async(req, res)=>{
-      const data = req.body;
-      const result = await productCollection.insertOne(data);
+      const {product} = req.body;
+      console.log(product);
+      const result = await productCollection.insertOne(product);
+      res.send(result);
+    })
+    app.get('/products', async(req, res) =>{
+      const allProducts = req.query.allProducts;
+      let result;
+      if(allProducts){
+        const data = await productCollection.find()
+        result = await data.toArray();
+      }
       res.send(result);
     })
   } finally {
